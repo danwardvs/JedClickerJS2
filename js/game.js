@@ -62,14 +62,24 @@ var item = function (x,y,money_type,price,value,name) {
 item.prototype.draw = function(){
 	
 	rect(canvas,this.x+45,this.y,SCREEN_W-1,this.y+40,makecol(0,0,0));
-	if(money<this.price){
-            rectfill(canvas,this.x,this.y,this.x+45,this.y+40,makecol(255,0,0));
-    }else{
-        rectfill(canvas,this.x,this.y,this.x+45,this.y+40,makecol(0,255,0));
-		textout( canvas,font,"Buy", this.x+12,this.y+24,15, makecol(0,0,0), "Buy");
-	}
+	
+    if(this.name!="Jed" || (this.name=="Jed" && this.amount==0)){
+        if(money<this.price){
+                rectfill(canvas,this.x,this.y,this.x+45,this.y+40,makecol(255,0,0));
+                textout_right(canvas,font,this.price,this.x-10,this.y+25,16,makecol(0,0,0));
+        }else{
+            rectfill(canvas,this.x,this.y,this.x+45,this.y+40,makecol(0,255,0));
+		    textout( canvas,font,"Buy", this.x+12,this.y+24,15, makecol(0,0,0), "Buy");
+            textout_right(canvas,font,this.price,this.x-10,this.y+25,16,makecol(0,0,0));
+	      }
+    }
+    if(this.name=="Jed" && this.amount!=0){
+           rectfill(canvas,this.x,this.y,this.x+45,this.y+40,makecol(100,100,255));
+    }
+    
+    
 	rect(canvas,this.x,this.y,this.x+45,this.y+40,makecol(0,0,0));
-	textout_right(canvas,font,this.price,this.x-10,this.y+25,16,makecol(0,0,0));
+
 	
 	if(this.money_type==COINS_PER_SECOND){
 		//var coin_string = string.concat(value,"JS/C");
