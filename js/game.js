@@ -156,6 +156,7 @@ function update()
 {	
 	second_timer++;
 	
+    money_particle_array.push(new money_particle(Math.floor((Math.random() * 340) + 31),Math.floor((Math.random() * 270) + 231),money_per_second));
     
     
 	if(second_timer>60){
