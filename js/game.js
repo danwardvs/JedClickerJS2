@@ -35,6 +35,8 @@ var money_particle = function (x,y,money){
     this.money = money;
 }
 
+
+
 money_particle.prototype.draw = function(){
     textout( canvas,font,"$" +  this.money, this.x,this.y,10, makecol(0,200,0));
 }
@@ -263,6 +265,8 @@ function setup(){
 function main()
 {
     
+    var touchzone = document.getElementById("game_canvas");
+      touchzone.addEventListener("touchstart", draw, false);
 	enable_debug('debug');
 	allegro_init_all("game_canvas", 1000,600);
 	setup();

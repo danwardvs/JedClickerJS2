@@ -15,6 +15,7 @@ var h = 0;
 var timer;
 var updateStarted = false;
 var touches = [];
+var touch_down;
 function update() {
 	if (updateStarted) return;
 	updateStarted = true;
@@ -34,6 +35,17 @@ function update() {
 		var touch = touches[i];
     var px = touch.pageX;
     var py = touch.pageY;
+	if(touch_down==true){
+		ctx.beginPath();
+		ctx.arc(px, py, 20, 0, 2*Math.PI, true);
+		ctx.fillStyle = "rgba(0, 0, 200, 0.2)";
+		ctx.fill();
+		ctx.lineWidth = 2.0;
+		ctx.strokeStyle = "rgba(0, 0, 200, 0.8)";
+		ctx.stroke();
+		console.log("TAP!");
+	}
+ 	touch_down=false;
 	}
 	updateStarted = false;
 }
@@ -49,8 +61,7 @@ canvas.addEventListener('touchmove', function(event) {
   touches = event.touches;
 });
 canvas.addEventListener('touchstart', function(event) {
-  ctx.rect(px,py,px+50,py+50);
-	ctx.stroke();
+  touch_down=true;
 });
 };
 </script>
