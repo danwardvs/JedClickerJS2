@@ -207,7 +207,7 @@ function _mousemove(e)
 function _mousewheel(e)
 {
 	mouse_z += e.deltaY;
-	e.preventDefault();
+	//e.preventDefault();
 }
 
 //@}
@@ -509,7 +509,7 @@ function _keydown(e)
 {
 	if (!key[e.keyCode]) pressed[e.keyCode] = true;
 	key[e.keyCode] = true;
-	if (_enabled_keys.indexOf(e.keyCode)==-1) e.preventDefault();
+	//if (_enabled_keys.indexOf(e.keyCode)==-1) e.preventDefault();
 }
 
 /// key up event handler
@@ -517,7 +517,7 @@ function _keyup(e)
 {
 	key[e.keyCode] = false;
 	released[e.keyCode] = true;
-	if (_enabled_keys.indexOf(e.keyCode)==-1) e.preventDefault();
+	//if (_enabled_keys.indexOf(e.keyCode)==-1) e.preventDefault();
 }
 
 //@}
