@@ -113,7 +113,6 @@ function install_mouse(menu)
 		_allog("Mouse already installed");
 		return -1;
 	}
-
 	canvas.canvas.addEventListener('mouseup',_mouseup);
 	canvas.canvas.addEventListener('mousedown',_mousedown);
 	canvas.canvas.addEventListener('mousemove',_mousemove);
@@ -176,7 +175,7 @@ function hide_mouse()
 /// Mouse context menu suppressor
 function _mousemenu(e)
 {
-	//e.preventDefault();
+	e.preventDefault();
 }
 
 /// mouse up event handler
@@ -184,7 +183,7 @@ function _mouseup(e)
 {
 	mouse_b = mouse_b&~(1<<(e.which-1));
 	mouse_pressed = mouse_pressed|(1<<(e.which-1));
-	//e.preventDefault();
+	e.preventDefault();
 }
 
 /// mouse down event handler
@@ -192,7 +191,7 @@ function _mousedown(e)
 {
 	mouse_b = mouse_b|(1<<(e.which-1));
 	mouse_released = mouse_released|(1<<(e.which-1));
-	//e.preventDefault();
+	e.preventDefault();
 }
 
 /// mouse move event handler
@@ -200,14 +199,14 @@ function _mousemove(e)
 {
 	mouse_x = e.offsetX;
 	mouse_y = e.offsetY;
-	//e.preventDefault();
+	e.preventDefault();
 }
 
 /// mouse wheel event handler
 function _mousewheel(e)
 {
 	mouse_z += e.deltaY;
-	//e.preventDefault();
+	e.preventDefault();
 }
 
 //@}
@@ -509,7 +508,7 @@ function _keydown(e)
 {
 	if (!key[e.keyCode]) pressed[e.keyCode] = true;
 	key[e.keyCode] = true;
-	//if (_enabled_keys.indexOf(e.keyCode)==-1) e.preventDefault();
+	if (_enabled_keys.indexOf(e.keyCode)==-1) e.preventDefault();
 }
 
 /// key up event handler
@@ -517,7 +516,7 @@ function _keyup(e)
 {
 	key[e.keyCode] = false;
 	released[e.keyCode] = true;
-	//if (_enabled_keys.indexOf(e.keyCode)==-1) e.preventDefault();
+	if (_enabled_keys.indexOf(e.keyCode)==-1) e.preventDefault();
 }
 
 //@}
