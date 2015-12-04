@@ -112,7 +112,7 @@ function location_pressed(min_x,max_x,min_y,max_y){
 		return false;
 	}
 }
-}
+
 
 function draw()
 {	
@@ -127,8 +127,8 @@ function draw()
 	textout(canvas,font,jedcoin_per_second,5,65,30,makecol(0,0,0));
 	textout(canvas,font,jedcoin_per_click,5,95,30,makecol(0,0,0));
 	
-	if(!location_clicked(10,410,190,600) && !location_right_clicked(10,410,190,600))draw_sprite(canvas,coin,10,190);
-	if(location_clicked(10,410,190,600) || location_right_clicked(10,410,190,600))stretch_sprite(canvas,coin,30,210,360,360);
+	if(!location_pressed(10,410,190,600) && !location_right_clicked(10,410,190,600))draw_sprite(canvas,coin,10,190);
+	if(location_pressed(10,410,190,600) || location_right_clicked(10,410,190,600))stretch_sprite(canvas,coin,30,210,360,360);
 	
     
     
@@ -167,9 +167,9 @@ function update()
 {	
     
     
-    if(location_tapped(10,410,190,600)){
-           money_particle_array.push(new money_particle(Math.floor((Math.random() * 340) + 31),Math.floor((Math.random() * 270) + 231),money_per_click));
-    }
+   // if(location_tapped(10,410,190,600)){
+    //       money_particle_array.push(new money_particle(Math.floor((Math.random() * 340) + 31),Math.floor((Math.random() * 270) + 231),money_per_click));
+   // }
     
 	second_timer++;
 	
@@ -202,7 +202,7 @@ function update()
 		money=money*10000;
 	}
 	//Coin being clicked
-	if((location_clicked(10,410,190,600)||location_right_clicked(10,410,190,600)) && !coin_clicked){
+	if((location_pressed(10,410,190,600)||location_right_clicked(10,410,190,600)) && !coin_clicked){
 		coin_clicked = true;
 		money+=money_per_click;
         money_particle_array.push(new money_particle(Math.floor((Math.random() * 340) + 31),Math.floor((Math.random() * 270) + 231),money_per_click));
