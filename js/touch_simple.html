@@ -6,10 +6,10 @@
  
     function init() {
       var touchzone = document.getElementById("mycanvas");
-      touchzone.addEventListener("touchstart", draw, false);
+      touchzone.addEventListener("touchstart", getTouch, false);
     }
  
-    function draw() {
+    function getTouch() {
       var canvas = document.getElementById('mycanvas');
  
       if(canvas.getContext) {

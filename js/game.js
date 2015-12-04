@@ -17,6 +17,8 @@ var w=25;
 var COINS_PER_CLICK = 0;
 var COINS_PER_SECOND = 1;
 
+var tap_down = false;
+
 var slave_y=0;
 var old_mouse_z = 0;
 var second_timer = 0;
@@ -79,7 +81,7 @@ var cookie = new item(550,840,COINS_PER_SECOND,7,0,"Depressed Cookie");
 
 
 function location_tapped(min_x,max_x,min_y,max_y){
-    if(tap_x>min_x && tap_x<max_x && tap_y>min_y && tap_y<max_y && (mouse_b & 1 || mouse_b & 2)){
+    if(tap_x>min_x && tap_x<max_x && tap_y>min_y && tap_y<max_y && tap_down){
         return true;
 	}else{
 		return false;
@@ -103,6 +105,15 @@ function location_right_clicked(min_x,max_x,min_y,max_y){
 	}
 }
 
+function location_pressed(min_x,max_x,min_y,max_y){
+    if(location_clicked(min_x,max_x,min_y,max_y) || location_tapped(min_x,max_x,min_y,max_y)){
+        return true;
+	}else{
+		return false;
+	}
+}
+}
+
 function draw()
 {	
     
@@ -119,9 +130,7 @@ function draw()
 	if(!location_clicked(10,410,190,600) && !location_right_clicked(10,410,190,600))draw_sprite(canvas,coin,10,190);
 	if(location_clicked(10,410,190,600) || location_right_clicked(10,410,190,600))stretch_sprite(canvas,coin,30,210,360,360);
 	
-    if(location_tapped(10,410,190,600)){
-        alert("you get a new car");
-    }
+    
     
     
 	slave.draw();
@@ -156,9 +165,15 @@ function draw()
 
 function update()
 {	
+    
+    
+    if(location_tapped(10,410,190,600)){
+           money_particle_array.push(new money_particle(Math.floor((Math.random() * 340) + 31),Math.floor((Math.random() * 270) + 231),money_per_click));
+    }
+    
 	second_timer++;
 	
-    money_particle_array.push(new money_particle(Math.floor((Math.random() * 340) + 31),Math.floor((Math.random() * 270) + 231),money_per_second));
+
     
     
 	if(second_timer>60){
@@ -226,7 +241,15 @@ function update()
     }
     
 	old_mouse_z = mouse_z;
+    tap_down = false;
+    
 
+}
+function getTouch(){
+    
+    tap_down = true;
+    tap_x = event.touches[0].pageX;
+    tap_y = event.touches[0].pageY
 }
 
 function setup(){
@@ -266,7 +289,8 @@ function main()
 {
     
     var touchzone = document.getElementById("game_canvas");
-      touchzone.addEventListener("touchstart", draw, false);
+      touchzone.addEventListener("touchstart", getTouch, false);
+      
 	enable_debug('debug');
 	allegro_init_all("game_canvas", 1000,600);
 	setup();
