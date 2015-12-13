@@ -17,7 +17,7 @@ var w=25;
 var COINS_PER_CLICK = 0;
 var COINS_PER_SECOND = 1;
 
-var tap_down = false;
+var tap_down = 0;
 
 var slave_y=0;
 var old_mouse_z = 0;
@@ -241,15 +241,21 @@ function update()
     }
     
 	old_mouse_z = mouse_z;
-    tap_down = false;
+    if(tap_down>0)tap_down--;
     
 
 }
 function getTouch(){
     
-    tap_down = true;
+    tap_down = 1;
     tap_x = event.touches[0].pageX;
     tap_y = event.touches[0].pageY
+    
+    var bbox = canvas.getBoundingClientRect();
+
+    tap_x = tap_x - bbox.left * (canvas.width  / bbox.width),
+    tap_y = tap_y - bbox.top  * (canvas.height / bbox.height)
+   
 }
 
 function setup(){
