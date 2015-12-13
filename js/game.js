@@ -4,9 +4,6 @@ var money=0;
 var money_per_click=1;
 var money_per_second=0;
 
-var tap_x = 0;
-var tap_y = 0;
-
 var bobX=600;
 var bobY=600;
 var flip=0;
@@ -16,8 +13,6 @@ var w=25;
 
 var COINS_PER_CLICK = 0;
 var COINS_PER_SECOND = 1;
-
-var tap_down = 0;
 
 var slave_y=0;
 var old_mouse_z = 0;
@@ -37,8 +32,6 @@ var money_particle = function (x,y,money){
     this.money = money;
 }
 
-
-
 money_particle.prototype.draw = function(){
     textout( canvas,font,"$" +  this.money, this.x,this.y,10, makecol(0,200,0));
 }
@@ -52,6 +45,125 @@ money_particle.prototype.update = function(){
     }
 }
 
+var item = function (x,y,money_type,price,value,name) {
+	this.name = name;
+	this.value = value
+	this.x = x;
+	this.y = y;
+	this.price = price;
+	this.money_type = money_type;
+	this.amount = 0;
+	this.step=0;
+	this.scroll_step=0;
+	this.image = 0;
+	
+}
+
+item.prototype.draw = function(){
+	
+	rect(canvas,this.x+45,this.y,SCREEN_W-1,this.y+40,makecol(0,0,0));
+	
+    if(this.name!="Jed" || (this.name=="Jed" && this.amount==0)){
+        if(money<this.price){
+                rectfill(canvas,this.x,this.y,this.x+45,this.y+40,makecol(255,0,0));
+                textout_right(canvas,font,this.price,this.x-10,this.y+25,16,makecol(0,0,0));
+        }else{
+            rectfill(canvas,this.x,this.y,this.x+45,this.y+40,makecol(0,255,0));
+		    textout( canvas,font,"Buy", this.x+12,this.y+24,15, makecol(0,0,0), "Buy");
+            textout_right(canvas,font,this.price,this.x-10,this.y+25,16,makecol(0,0,0));
+	      }
+    }
+    if(this.name=="Jed" && this.amount!=0){
+           rectfill(canvas,this.x,this.y,this.x+45,this.y+40,makecol(100,100,255));
+    }
+    
+    
+	rect(canvas,this.x,this.y,this.x+45,this.y+40,makecol(0,0,0));
+
+	
+	if(this.money_type==COINS_PER_SECOND){
+		//var coin_string = string.concat(value,"JS/C");
+		coin_string = this.value + " JC/S"
+		textout_right( canvas, font, coin_string, SCREEN_W-25, this.y+15, 12, makecol(0,100,0));
+	}
+    if(this.money_type==COINS_PER_CLICK){
+		coin_string = this.value + " JC/C"
+		textout_right( canvas, font, coin_string, SCREEN_W-25, this.y+15, 12, makecol(200,0,0));
+	}
+	for(i = 0; i <this.amount; i++){
+         draw_sprite(canvas,this.image,this.x+50+(i*25),this.y+10);
+    }
+	
+	textout(canvas,font,this.name + "s: " + this.amount, this.x+50,this.y+15,12,makecol(0,0,0));
+	
+	
+}
+item.prototype.update = function(){
+	
+    if(this.name=="Slave"){
+		slave_y = this.y;
+	}
+    
+	this.step++;
+	
+	if(mouse_z < old_mouse_z && slave_y<0){
+       this.y+=40;
+       
+    }
+	if(mouse_z > old_mouse_z && slave_y>-280){
+        this.y-=40;
+     
+    }
+	
+	
+	if((this.name=="Jed" && this.amount==0)|| this.name!="Jed" ){
+        if(location_clicked(this.x,this.x+45,this.y,this.y+40) && this.step>10){
+            if(money>=this.price){
+                if(this.name == "Jed"){
+                    alert("You win!");
+                }
+                play_sample(sound_buy);
+                money-=this.price;
+                this.amount++;
+                if(this.money_type==0){
+                money_per_click+=this.value;
+                }
+                if(this.money_type==1){
+                    money_per_second+=this.value;
+                }
+
+                this.price=Math.round(this.price*1.25);
+            }
+            this.step=0;
+        }
+
+        if(location_right_clicked(this.x,this.x+45,this.y,this.y+40)){
+            if(money>=this.price){
+                if(this.name == "Jed"){
+                    alert("You win!");
+                }
+                play_sample(sound_buy);
+                money-=this.price;
+                this.amount++;
+                if(this.money_type==0){
+                    money_per_click+=this.value;
+                }
+                if(this.money_type==1){
+                    money_per_second+=this.value;
+                }
+				var numbermath = this.price*1.25;
+                this.price=Math.round(numbermath);
+            }
+        }
+    }
+
+	
+}
+
+item.prototype.set_image = function(image_to_load){
+	this.image = load_bmp(image_to_load);
+	
+}
 
 //Creates an item based on the item class
 //The arguments are x position, y position, money type, initial cost, amount of money received, and name.
@@ -80,14 +192,6 @@ var jed = new item(550,800,COINS_PER_SECOND,100000000000000,30000000000,"Jed");
 var cookie = new item(550,840,COINS_PER_SECOND,7,0,"Depressed Cookie");
 
 
-function location_tapped(min_x,max_x,min_y,max_y){
-    if(tap_x>min_x && tap_x<max_x && tap_y>min_y && tap_y<max_y && tap_down){
-        return true;
-	}else{
-		return false;
-	}
-}
-
 
 function location_clicked(min_x,max_x,min_y,max_y){
     if(mouse_x>min_x && mouse_x<max_x && mouse_y>min_y && mouse_y<max_y && (mouse_b & 1 || mouse_b & 2)){
@@ -105,15 +209,6 @@ function location_right_clicked(min_x,max_x,min_y,max_y){
 	}
 }
 
-function location_pressed(min_x,max_x,min_y,max_y){
-    if(location_clicked(min_x,max_x,min_y,max_y) || location_tapped(min_x,max_x,min_y,max_y)){
-        return true;
-	}else{
-		return false;
-	}
-}
-
-
 function draw()
 {	
     
@@ -127,12 +222,9 @@ function draw()
 	textout(canvas,font,jedcoin_per_second,5,65,30,makecol(0,0,0));
 	textout(canvas,font,jedcoin_per_click,5,95,30,makecol(0,0,0));
 	
-	if(!location_pressed(10,410,190,600) && !location_right_clicked(10,410,190,600))draw_sprite(canvas,coin,10,190);
-	if(location_pressed(10,410,190,600) || location_right_clicked(10,410,190,600))stretch_sprite(canvas,coin,30,210,360,360);
+	if(!location_clicked(10,410,190,600) && !location_right_clicked(10,410,190,600))draw_sprite(canvas,coin,10,190);
+	if(location_clicked(10,410,190,600) || location_right_clicked(10,410,190,600))stretch_sprite(canvas,coin,30,210,360,360);
 	
-    
-    
-    
 	slave.draw();
     press.draw();
     workstation.draw();
@@ -165,15 +257,8 @@ function draw()
 
 function update()
 {	
-    
-    
-   // if(location_tapped(10,410,190,600)){
-    //       money_particle_array.push(new money_particle(Math.floor((Math.random() * 340) + 31),Math.floor((Math.random() * 270) + 231),money_per_click));
-   // }
-    
 	second_timer++;
 	
-
     
     
 	if(second_timer>60){
@@ -202,7 +287,7 @@ function update()
 		money=money*10000;
 	}
 	//Coin being clicked
-	if((location_pressed(10,410,190,600)||location_right_clicked(10,410,190,600)) && !coin_clicked){
+	if((location_clicked(10,410,190,600)||location_right_clicked(10,410,190,600)) && !coin_clicked){
 		coin_clicked = true;
 		money+=money_per_click;
         money_particle_array.push(new money_particle(Math.floor((Math.random() * 340) + 31),Math.floor((Math.random() * 270) + 231),money_per_click));
@@ -241,21 +326,7 @@ function update()
     }
     
 	old_mouse_z = mouse_z;
-    if(tap_down>0)tap_down--;
-    
 
-}
-function getTouch(){
-    
-    tap_down = 1;
-    tap_x = event.touches[0].pageX;
-    tap_y = event.touches[0].pageY
-    
-    var bbox = canvas.getBoundingClientRect();
-
-    tap_x = tap_x - bbox.left * (canvas.width  / bbox.width),
-    tap_y = tap_y - bbox.top  * (canvas.height / bbox.height)
-   
 }
 
 function setup(){
@@ -290,19 +361,13 @@ function setup(){
 	sound_buy = load_sample("audio/sound_buy.mp3");
 }
 
-
 function main()
 {
-    
-    var touchzone = document.getElementById("game_canvas");
-      touchzone.addEventListener("touchstart", getTouch, false);
-      
 	enable_debug('debug');
 	allegro_init_all("game_canvas", 1000,600);
 	setup();
 	ready(function(){
 		loop(function(){
-            
 			clear_to_color(canvas,makecol(255,255,255));
 			update();
 			draw();
