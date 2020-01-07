@@ -1,15 +1,7 @@
-var x = 100,y = 100;
 var coin;
 var money=0;
 var money_per_click=1;
 var money_per_second=0;
-
-var bobX=600;
-var bobY=600;
-var flip=0;
-var angle=0;
-var h=25;
-var w=25;
 
 // Constants for two types of items
 var COINS_PER_CLICK = 0;
@@ -49,11 +41,11 @@ class MoneyParticle{
     draw(){
         textout( canvas,font,"$" +  this.money, this.x,this.y,10, makecol(0,200,0));
     }
-
 }
 
-
 class Item {
+
+
     constructor(x,y,money_type,price,value,name,img_path) {
         this.name = name;
         this.value = value
@@ -156,9 +148,6 @@ class Item {
 }
 
 
-
-
-
 function location_clicked(min_x,max_x,min_y,max_y){
     if(mouse_x>min_x && mouse_x<max_x && mouse_y>min_y && mouse_y<max_y && (mouse_b & 1 || mouse_b & 2)){
         return true;
@@ -219,9 +208,6 @@ function update()
           game_money_particles.splice(i,1);
        }
     }
-       
-    
-   
 	
 	if(key[KEY_I]){
 		money+=10000;
